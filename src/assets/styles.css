@@ -1,0 +1,109 @@
+/* Зеленая гамма + базовые стили */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e6f0e6; /* светло-зеленый фон */
+    color: #000; /* черный текст */
+  }
+  
+  header {
+    background-color: #2e7d32; /* темно-зеленый */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  button {
+    background-color: #4caf50; /* зеленый */
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    margin: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  button:hover {
+    background-color: #388e3c;
+  }
+  
+  input, select {
+    padding: 6px 8px;
+    margin: 4px 0;
+    border: 1px solid #4caf50;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .card {
+    background-color: #a5d6a7; /* светло-зеленый */
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(46,125,50,0.3);
+  }
+  
+  .modal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #c8e6c9;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-weight: 600;
+  }
+  
+  nav a.router-link-exact-active {
+    text-decoration: underline;
+  }
+  
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin: 20px 0;
+  }
+  
+  .calendar-day {
+    background-color: #81c784;
+    border-radius: 6px;
+    padding: 8px;
+    min-height: 100px;
+    cursor: pointer;
+  }
+  
+  .calendar-day:hover {
+    background-color: #66bb6a;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+  }
+  
+  .error-message {
+    color: #b71c1c;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  
