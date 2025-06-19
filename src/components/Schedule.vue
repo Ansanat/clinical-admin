@@ -4,9 +4,9 @@
       <h1>Расписание</h1>
   
       <div class="calendar-header">
-        <button @click="prevMonth">&lt;</button>
+        <button @click="prevMonth" style="background-color: green">&lt;</button>
         <h2>{{ monthYear }}</h2>
-        <button @click="nextMonth">&gt;</button>
+        <button style="background-color: green" @click="nextMonth">&gt;</button>
       </div>
   
       <!-- Дни недели -->

@@ -5,36 +5,41 @@
   
       <form @submit.prevent="saveRecord">
         <label>Дата</label>
-        <input type="date" v-model="form.date" required />
+        <input style="margin-left: 10px;" type="date" v-model="form.date" required />
+        <br>
   
         <label>Специалист</label>
-        <select v-model="form.specialistId" @change="onSpecialistChange" required>
+        <select style="margin-left: 10px;" v-model="form.specialistId" @change="onSpecialistChange" required>
           <option disabled value="">Выберите специалиста</option>
           <option v-for="spec in availableSpecialists" :key="spec.id" :value="spec.id">
             {{ spec.name }} - {{ spec.specialty }}
           </option>
         </select>
+        <br>
   
         <label>Услуга</label>
-        <select v-model="form.serviceName" @change="onServiceChange" required>
+        <select style="margin-left: 10px;" v-model="form.serviceName" @change="onServiceChange" required>
           <option disabled value="">Выберите услугу</option>
           <option v-for="service in availableServices" :key="service.name" :value="service.name">
             {{ service.name }} ({{ service.duration }})
           </option>
         </select>
+        <br>
   
         <label>Время</label>
-        <select v-model="form.time" required>
+        <select style="margin-left: 10px;" v-model="form.time" required>
           <option disabled value="">Выберите время</option>
           <option v-for="slot in availableTimeSlots" :key="slot" :value="slot">{{ slot }}</option>
         </select>
         <p v-if="timeError" class="error-message">{{ timeError }}</p>
+        <br>
   
         <label>ФИО пациента</label>
-        <input v-model="form.patientName" required />
+        <input style="margin-left: 10px;" v-model="form.patientName" required />
+        <br>
   
         <label>Номер телефона пациента</label>
-        <input v-model="form.patientPhone" type="tel" required />
+        <input style="margin-left: 10px;" v-model="form.patientPhone" type="tel" required />
   
         <div style="margin-top: 20px;">
           <button type="submit">Сохранить</button>

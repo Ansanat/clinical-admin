@@ -4,26 +4,28 @@
       <h1>{{ isEdit ? 'Редактировать специалиста' : 'Добавить специалиста' }}</h1>
   
       <form @submit.prevent="saveSpecialist">
-        <label>Имя Фамилия Отчество</label>
-        <input v-model="form.name" required />
-  
+        <label>Фамилия Имя Отчество</label>
+        <br>
+        <input style="width: 400px;" v-model="form.name" required />
+        <br>
         <label>Специальность</label>
-        <input v-model="form.specialty" required />
-  
+        <br>
+        <input style="width: 400px;" v-model="form.specialty" required />
+        <br>
         <h3>Услуги</h3>
         <div v-for="(service, idx) in form.services" :key="idx" style="margin-bottom: 10px;">
           <label>Название</label>
-          <input v-model="service.name" required />
-          <label>Время (HH:MM)</label>
-          <input type="time" v-model="service.duration" required />
-          <button type="button" @click="removeService(idx)">Удалить услугу</button>
+          <input v-model="service.name" required style="margin-left: 10px;"/>
+          <label style="margin-left: 10px;">Время (HH:MM)</label>
+          <input type="time" v-model="service.duration" required style="margin-left: 10px;"/>
+          <button type="button" @click="removeService(idx)" style="margin-left: 10px;">Удалить услугу</button>
         </div>
-        <button type="button" @click="addService">Добавить услугу</button>
+        <button type="button" @click="addService" >Добавить услугу</button>
   
         <h3>Расписание</h3>
         <div v-for="day in daysOfWeek" :key="day.key" style="margin-bottom: 8px;">
           <label>{{ day.label }}</label>
-          <input v-model="form.schedule[day.key]" placeholder="например 10:00-16:00 или пусто" @input="validateInterval(day.key)" />
+          <input style="margin-left: 10px;" v-model="form.schedule[day.key]" placeholder="например 10:00-16:00 или пусто" @input="validateInterval(day.key)" />
           <p v-if="errors[day.key]" class="error-message">{{ errors[day.key] }}</p>
         </div>
   
