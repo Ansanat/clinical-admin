@@ -55,7 +55,7 @@
   import HeaderMenu from './HeaderMenu.vue';
   import { db } from '../firebase';
   import { collection, getDocs, doc, getDoc, addDoc, setDoc, query, where } from "firebase/firestore";
-  
+
   const router = useRouter();
   const route = useRoute();
   
@@ -114,7 +114,8 @@
       const interval = spec.schedule?.[date];
       return interval && interval.trim() !== '';
     });
-    if (!availableSpecialists.value.find(s => s.id === form.specialistId)) {
+    // Проверяем, есть ли выбранный специалист в доступных
+    if (form.specialistId && !availableSpecialists.value.some(s => s.id === form.specialistId)) {
       form.specialistId = '';
       form.serviceName = '';
       availableServices.value = [];
@@ -290,20 +291,29 @@
     updateAvailableTimeSlots();
   });
   
-  onMounted(async () => {
-    if (!route.params.date && !route.params.id) {
-      form.date = new Date().toISOString().slice(0,10);
-    } else if (route.params.date) {
-      form.date = route.params.date;
+onMounted(async () => {
+  if (!route.params.date && !route.params.id) {
+    form.date = new Date().toISOString().slice(0,10);
+  } else if (route.params.date) {
+    form.date = route.params.date;
+    
+    // Если есть specialistId в query параметрах, устанавливаем его
+    if (route.query.specialist) {
+      form.specialistId = route.query.specialist;
     }
-  
-    await loadSpecialists();
-  
-    if (route.params.id) {
-      isEdit.value = true;
-      await loadRecord(route.params.id);
-    }
-  });
+  }
+
+  await loadSpecialists();
+
+  if (route.params.id) {
+    isEdit.value = true;
+    await loadRecord(route.params.id);
+  } else if (form.specialistId) {
+    // Если специалист уже выбран, обновляем доступные услуги и временные слоты
+    updateAvailableServices();
+    updateAvailableTimeSlots();
+  }
+});
   </script>
   
   <style scoped>

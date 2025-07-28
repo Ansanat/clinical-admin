@@ -6,29 +6,33 @@
       <h2>Записи на {{ formattedDate }}</h2>
       <!-- Кнопка "Создать новую запись" убрана -->
     </div>
-
+<hr></hr>
     <div v-if="loading">Загрузка...</div>
     <div v-else>
       <div v-if="specialistsWithRecords.length === 0">Нет специалистов, работающих в этот день.</div>
       <div v-for="spec in specialistsWithRecords" :key="spec.id" style="margin-top: 20px;">
         <h3>
           {{ spec.name }} - {{ spec.specialty }}
-          <button @click="createRecord(spec.id)" style="margin-left: 10px;">Добавить запись</button>
+          <div class="schedule-interval" style="font-size: 17px; margin-top: 5px;">
+            {{ formatSchedule(spec.schedule?.[dateParam]) }}
+          </div>
+
+          <p></p>
+          <button @click="createRecord(spec.id)" style="background-color: green;">Добавить запись</button>
+          <button @click="downloadSchedule(spec)" style="margin-left: 10px; background-color: green;">Скачать расписание</button>
         </h3>
-        <!-- Добавляем строку с расписанием -->
-        <div class="schedule-interval" style="font-size: 15px; margin-bottom: 30px;">
-          {{ formatSchedule(spec.schedule?.[dateParam]) }}
-        </div>
 
         <div v-if="spec.records.length === 0"><em>Записей нет</em></div>
         <div v-for="record in spec.records" :key="record.id" class="card">
-          <p><strong>Услуга:</strong> {{ record.serviceName }}</p>
-          <p><strong>Время:</strong> {{ record.time }}</p>
-          <p><strong>Пациент:</strong> {{ record.patientName }}</p>
-          <p><strong>Телефон:</strong> {{ record.patientPhone }}</p>
+          <span style="margin-right: 10px;"><strong>Услуга:</strong> {{ record.serviceName }}</span>
+          <span style="margin-right: 10px;"><strong>Время:</strong> {{ record.time }}</span>
+          <span style="margin-right: 10px;"><strong>Пациент:</strong> {{ record.patientName }}</span>
+          <span style="margin-right: 10px;"><strong>Телефон:</strong> {{ record.patientPhone }}</span>
+          <p></p>
           <button @click="editRecord(record.id)">Редактировать</button>
           <button @click="confirmDelete(record)">Удалить</button>
         </div>
+        <hr></hr>
       </div>
     </div>
 
@@ -99,7 +103,11 @@ function goBack() {
 }
 
 function createRecord(specialistId) {
-  router.push({ name: 'AddRecord', params: { date: dateParam, specialistId } });
+  router.push({ 
+    name: 'AddRecord', 
+    params: { date: dateParam, specialistId }, // Добавляем specialistId в параметры
+    query: { specialist: specialistId } // Добавляем specialistId в query параметры
+  });
 }
 
 function editRecord(id) {
@@ -130,6 +138,38 @@ onMounted(async () => {
   await loadRecords();
   loading.value = false;
 });
+
+async function downloadSchedule(specialist) {
+  try {
+    // Формируем содержимое файла
+    let fileContent = `Расписание ${specialist.name} (${specialist.specialty})\n`;
+    fileContent += `Дата: ${formattedDate.value}\n\n`;
+    
+    // Добавляем каждую запись
+    specialist.records.forEach(record => {
+      fileContent += `${record.time} - ${record.serviceName}. `;
+      fileContent += `Пациент: ${record.patientName}. `;
+      fileContent += `Телефон: ${record.patientPhone}.\n`;
+    });
+
+    // Создаем Blob
+    const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+    
+    // Создаем ссылку для скачивания
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Расписание_${specialist.name}_${dateParam}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+  } catch (error) {
+    console.error('Ошибка при генерации файла:', error);
+    alert('Произошла ошибка при создании файла: ' + error.message);
+  }
+}
 </script>
 
 <style scoped>

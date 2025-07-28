@@ -2,6 +2,8 @@
     <div style="max-width: 900px; margin: 20px auto;">
       <HeaderMenu />
       <h1>Расписание</h1>
+
+      <FullSchedule />
   
       <div class="calendar-header">
         <button @click="prevMonth" style="background-color: green">&lt;</button>
@@ -45,6 +47,7 @@
   import { useRouter } from 'vue-router';
   import { db } from '../firebase';
   import { collection, getDocs } from "firebase/firestore";
+  import FullSchedule from './FullSchedule.vue';
   
   const router = useRouter();
   
