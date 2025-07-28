@@ -32,7 +32,8 @@
           @click="openDay(day.date)"
         >
           <strong>{{ day.day }}</strong>
-
+          <!-- Можно здесь вывести количество специалистов, если нужно -->
+          <!-- <div class="specialists">{{ day.specialists.length }} специалистов</div> -->
         </div>
       </div>
     </div>
@@ -68,25 +69,20 @@
     const days = [];
     const todayStr = new Date().toISOString().slice(0,10);
   
-    // В JS воскресенье = 0, понедельник = 1, нужно сместить, чтобы понедельник был первым
-    // Но здесь мы не используем для смещения, а только для специалистов
-    const dayKeyMap = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  
     for (let day = 1; day <= daysCount; day++) {
       const dateObj = new Date(year, month, day, 12, 0, 0);
-      const dayOfWeek = dateObj.getDay(); // 0 (вск) - 6 (сб)
-      const dayKey = dayKeyMap[dayOfWeek];
+      const dateStr = dateObj.toISOString().slice(0,10);
   
       const workingSpecs = specialists.value.filter(spec => {
-        const interval = spec.schedule?.[dayKey];
+        const interval = spec.schedule?.[dateStr];
         return interval && interval.trim() !== '';
       });
   
       days.push({
         day,
-        date: dateObj.toISOString().slice(0,10),
+        date: dateStr,
         specialists: workingSpecs,
-        isToday: dateObj.toISOString().slice(0,10) === todayStr
+        isToday: dateStr === todayStr
       });
     }
     return days;
@@ -211,5 +207,4 @@
     text-overflow: ellipsis;
   }
   </style>
-  
   

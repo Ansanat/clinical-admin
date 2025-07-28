@@ -75,13 +75,6 @@
   const availableTimeSlots = ref([]);
   const timeError = ref('');
   
-  function dayOfWeekFromDate(dateStr) {
-    const d = new Date(dateStr);
-    const day = d.getDay(); // 0 - воскресенье
-    const map = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    return map[day];
-  }
-  
   function parseInterval(interval) {
     // Возвращает [startMinutes, endMinutes]
     if (!interval) return null;
@@ -117,9 +110,8 @@
       availableSpecialists.value = [];
       return;
     }
-    const dayKey = dayOfWeekFromDate(date);
     availableSpecialists.value = allSpecialists.value.filter(spec => {
-      const interval = spec.schedule?.[dayKey];
+      const interval = spec.schedule?.[date];
       return interval && interval.trim() !== '';
     });
     if (!availableSpecialists.value.find(s => s.id === form.specialistId)) {
@@ -157,8 +149,7 @@
     const spec = availableSpecialists.value.find(s => s.id === form.specialistId);
     if (!spec) return;
   
-    const dayKey = dayOfWeekFromDate(form.date);
-    const interval = spec.schedule?.[dayKey];
+    const interval = spec.schedule?.[form.date];
     if (!interval) return;
   
     const [workStart, workEnd] = parseInterval(interval);
@@ -234,6 +225,13 @@
       return;
     }
   
+    // Проверка, что специалист работает в этот день
+    const interval = spec.schedule?.[form.date];
+    if (!interval || interval.trim() === '') {
+      timeError.value = 'Специалист не работает в выбранный день.';
+      return;
+    }
+  
     const dataToSave = {
       date: form.date,
       specialistId: form.specialistId,
@@ -250,8 +248,6 @@
       const colRef = collection(db, 'records');
       await addDoc(colRef, dataToSave);
     }
-  
-    // TODO: Отправка SMS за сутки — это backend задача, тут можно добавить интеграцию с Firebase Functions или сторонним сервисом.
   
     router.push({ name: 'DayRecords', params: { date: form.date } });
   }
@@ -272,6 +268,14 @@
       form.patientName = data.patientName;
       form.patientPhone = data.patientPhone;
     }
+  }
+  
+  function onSpecialistChange() {
+    updateAvailableServices();
+  }
+  
+  function onServiceChange() {
+    updateAvailableTimeSlots();
   }
   
   watch(() => form.date, (newVal) => {
@@ -302,3 +306,11 @@
   });
   </script>
   
+  <style scoped>
+  .error-message {
+    color: red;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  </style>
+

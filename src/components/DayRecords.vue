@@ -15,6 +15,11 @@
           {{ spec.name }} - {{ spec.specialty }}
           <button @click="createRecord(spec.id)" style="margin-left: 10px;">Добавить запись</button>
         </h3>
+        <!-- Добавляем строку с расписанием -->
+        <div class="schedule-interval" style="font-size: 15px; margin-bottom: 30px;">
+          {{ formatSchedule(spec.schedule?.[dateParam]) }}
+        </div>
+
         <div v-if="spec.records.length === 0"><em>Записей нет</em></div>
         <div v-for="record in spec.records" :key="record.id" class="card">
           <p><strong>Услуга:</strong> {{ record.serviceName }}</p>
@@ -53,6 +58,13 @@ const allSpecialists = ref([]);
 const records = ref([]);
 const showConfirm = ref(false);
 const recordToDelete = ref(null);
+
+// Форматируем интервал расписания из "13:00-16:00" в "С 13:00 до 16:00"
+function formatSchedule(interval) {
+  if (!interval || interval.trim() === '') return 'Не работает';
+  const [start, end] = interval.split('-');
+  return `С ${start} до ${end}`;
+}
 
 // Загружаем специалистов, у которых в расписании есть выбранная дата
 async function loadSpecialists() {
@@ -127,3 +139,4 @@ onMounted(async () => {
   margin-bottom: 10px;
 }
 </style>
+
